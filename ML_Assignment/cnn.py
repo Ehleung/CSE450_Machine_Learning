@@ -23,7 +23,7 @@ nb_validation_samples = 100
 epochs = 5
 
 # SET THE BATCH SIZE
-batch_size = 10
+batch_size = 100
 
 if K.image_data_format() == 'channels_first':
     input_shape = (3, img_width, img_height)
@@ -32,10 +32,28 @@ else:
 
 # ADD CONVOLUTIONAL NEURAL NETWORK MODEL HERE
 # YOUR CODE GOES HERE
+
+#input_img = Input(shape=input_shape)
+
+#Define hyperparameters
 model = Sequential()
-model.add(Dense(2, input_dim=8, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.add(Conv2D(32, (3, 3), activation='relu', input_shape=input_shape))
+model.add(Conv2D(32, (3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Flatten())
+model.add(Dense(256, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(1, activation='softmax'))
+
+model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
+
 
 # THE FOLLOWING CODE WILL LOAD THE TRAINING AND VALIDATION DATA TO YOUR MODEL NAMED model
 train_datagen = ImageDataGenerator(
